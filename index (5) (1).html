@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hosting Minecraft - Najlepsza jakość serwerów!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #27ae60;
+            --primary-dark: #219653;
+            --secondary: #3498db;
+            --secondary-dark: #2980b9;
+            --accent: #f39c12;
+            --accent-dark: #e67e22;
+            --dark: #1a1f2d;
+            --darker: #121620;
+            --light: #ecf0f1;
+            --gray: #bdc3c7;
+            --danger: #e74c3c;
+            --success: #2ecc71;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--darker), var(--dark));
+            color: var(--light);
+            min-height: 100vh;
+            background-attachment: fixed;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Tło z teksturą Minecraft */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPgogIDxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiMxMjE2MjAiLz4KICA8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIGZpbGw9IiMxYzIxMzQiIG9wYWNpdHk9IjAuMSIvPgogIDxyZWN0IHg9IjUwIiB5PSIwIiB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIGZpbGw9IiMxYzIxMzQiIG9wYWNpdHk9IjAuMSIvPgogIDxyZWN0IHg9IjAiIHk9IjUwIiB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIGZpbGw9IiMxYzIxMzQiIG9wYWNpdHk9IjAuMSIvPgogIDxyZWN0IHg9IjUwIiB5PSI1MCIgd2lkdGg9IjUwIiBoZWlnaHQ9IjUwIiBmaWxsPSIjMWMyMTM0IiBvcGFjaXR5PSIwLjEiLz4KPC9zdmc+');
+            opacity: 0.7;
+            z-index: -1;
+        }
+        
+        /* Animowane piksele w tle */
+        .pixel-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+        }
+        
+        .pixel {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background-color: var(--primary);
+            border-radius: 1px;
+            animation: float 5s infinite linear;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+        
+        header {
+            background: rgba(18, 22, 32, 0.9);
+            padding: 15px 5%;
+            text-align: center;
+            border-bottom: 3px solid var(--primary);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            text-shadow: 0 0 10px rgba(39, 174, 96, 0.5);
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(to right, var(--primary), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        
+        .tagline {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-align: left;
+            text-shadow: 0 0 5px rgba(39, 174, 96, 0.3);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 15px;
+        }
+        
+        nav a {
+            color: var(--gray);
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        nav a:hover, nav a.active {
+            background: rgba(46, 204, 113, 0.2);
+            color: var(--success);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 5%;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 80px 0;
+            background: rgba(26, 31, 45, 0.7);
+            border-radius: 15px;
+            margin: 30px 0;
+            border: 2px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPgogIDxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiMyN2FlNjAiIG9wYWNpdHk9IjAuMDMiLz4KICA8cGF0aCBkPSJNMCAwIEw1MCA1MCBNMTAwIDAgTDUwIDUwIiBzdHJva2U9IiMyN2FlNjAiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLW9wYWNpdHk9IjAuMSIvPgo8L3N2Zz4=');
+            z-index: -1;
+        }
+        
+        .hero h2 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 15px rgba(39, 174, 96, 0.3);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            color: var(--gray);
+        }
+        
+        .section {
+            background: rgba(26, 31, 45, 0.8);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 2px solid rgba(52, 73, 94, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(52, 152, 219, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .section-title i {
+            color: var(--accent);
+            background: rgba(243, 156, 18, 0.1);
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .plans-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+        }
+        
+        .plan-card {
+            background: rgba(30, 40, 55, 0.7);
+            border-radius: 15px;
+            padding: 30px;
+            width: 100%;
+            max-width: 350px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid var(--dark);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
+        
+        .plan-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary), var(--success));
+        }
+        
+        .plan-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            border-color: var(--primary);
+        }
+        
+        .plan-card.wool {
+            border: 2px solid var(--secondary);
+        }
+        
+        .plan-card.wool::before {
+            background: linear-gradient(to right, var(--secondary-dark), var(--secondary));
+        }
+        
+        .plan-name {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: var(--success);
+            font-weight: 700;
+        }
+        
+        .plan-card.wool .plan-name {
+            color: var(--secondary);
+        }
+        
+        .plan-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, var(--accent), var(--accent-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .plan-card.wool .plan-price {
+            background: linear-gradient(to right, var(--secondary), var(--secondary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .plan-features {
+            list-style: none;
+            margin: 25px 0;
+            text-align: left;
+        }
+        
+        .plan-features li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .plan-features li i {
+            color: var(--success);
+            min-width: 20px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 14px 35px;
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+            letter-spacing: 0.5px;
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 7px 20px rgba(46, 204, 113, 0.6);
+        }
+        
+        .wool-btn {
+            background: linear-gradient(to right, var(--secondary), var(--secondary-dark));
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .wool-btn:hover {
+            box-shadow: 0 7px 20px rgba(52, 152, 219, 0.6);
+        }
+        
+        .panel-container {
+            display: flex;
+            min-height: 500px;
+            gap: 20px;
+        }
+        
+        .panel-sidebar {
+            flex: 0 0 250px;
+            background: rgba(30, 40, 55, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .panel-main {
+            flex: 1;
+            background: rgba(30, 40, 55, 0.9);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .panel-welcome {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        .panel-welcome h2 {
+            font-size: 2.2rem;
+            color: var(--success);
+            margin-bottom: 10px;
+            background: linear-gradient(to right, var(--success), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .panel-welcome p {
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+        
+        .login-form {
+            background: rgba(18, 22, 32, 0.7);
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+            border: 2px solid var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .form-title {
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--success);
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--secondary);
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 8px;
+            border: 2px solid var(--dark);
+            background: rgba(26, 31, 45, 0.8);
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 15px rgba(52, 152, 219, 0.5);
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .server-card {
+            background: rgba(18, 22, 32, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--success);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .server-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+        
+        .server-card h3 {
+            color: var(--success);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .server-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .server-info div {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .server-info span {
+            display: block;
+            color: var(--gray);
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+        
+        .server-info strong {
+            color: var(--secondary);
+            font-size: 1.2rem;
+            display: block;
+            font-weight: 600;
+        }
+        
+        .server-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .server-actions button {
+            padding: 12px 25px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .server-actions .start-btn {
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            color: white;
+        }
+        
+        .server-actions .manage-btn {
+            background: linear-gradient(to right, var(--secondary), var(--secondary-dark));
+            color: white;
+        }
+        
+        .server-actions .stop-btn {
+            background: linear-gradient(to right, var(--danger), #c0392b);
+            color: white;
+        }
+        
+        .server-actions button:hover {
+            transform: scale(1.05);
+        }
+        
+        .settings-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .texture-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .texture-card {
+            background: rgba(18, 22, 32, 0.7);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid var(--dark);
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .texture-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            border-color: var(--accent);
+        }
+        
+        .texture-img {
+            height: 150px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .texture-img::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.7));
+        }
+        
+        .texture-info {
+            padding: 15px;
+        }
+        
+        .texture-info h4 {
+            color: var(--accent);
+            margin-bottom: 8px;
+            font-size: 1.2rem;
+        }
+        
+        .texture-info p {
+            color: var(--gray);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .texture-download {
+            display: block;
+            text-align: center;
+            padding: 10px;
+            background: rgba(52, 152, 219, 0.2);
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .texture-download:hover {
+            background: rgba(52, 152, 219, 0.3);
+        }
+        
+        .discord-box {
+            background: rgba(114, 137, 218, 0.15);
+            border-radius: 15px;
+            padding: 40px 30px;
+            text-align: center;
+            border: 2px solid var(--secondary);
+            max-width: 800px;
+            margin: 50px auto 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .discord-box h3 {
+            font-size: 2rem;
+            color: var(--secondary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .discord-btn {
+            display: inline-block;
+            padding: 15px 50px;
+            background: var(--secondary);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-top: 25px;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .discord-btn:hover {
+            background: var(--secondary-dark);
+            transform: scale(1.05);
+            box-shadow: 0 7px 20px rgba(52, 152, 219, 0.6);
+        }
+        
+        .discord-btn i {
+            margin-right: 10px;
+        }
+        
+        .sidebar-title {
+            color: var(--accent);
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .sidebar-menu {
+            margin-top: 30px;
+        }
+        
+        .sidebar-menu ul {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 15px;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            color: var(--gray);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--success);
+        }
+        
+        .sidebar-menu a i {
+            width: 25px;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+        
+        .user-info {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .user-info p {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-info strong {
+            color: var(--success);
+        }
+        
+        footer {
+            background: rgba(18, 22, 32, 0.9);
+            padding: 30px 5%;
+            text-align: center;
+            margin-top: 50px;
+            border-top: 2px solid var(--primary);
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 30px;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+            text-align: left;
+        }
+        
+        .footer-section h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+        
+        .footer-section p {
+            color: var(--gray);
+            line-height: 1.6;
+        }
+        
+        .footer-bottom {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Ukryte sekcje */
+        .hidden {
+            display: none;
+        }
+        
+        .form-switch {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .form-switch a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .form-switch a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .panel-container {
+                flex-direction: column;
+            }
+            
+            .panel-sidebar {
+                flex: 0 0 auto;
+            }
+            
+            .plans-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .hero {
+                padding: 50px 20px;
+            }
+            
+            .hero h2 {
+                font-size: 2.2rem;
+            }
+            
+            .server-actions {
+                flex-direction: column;
+            }
+            
+            .server-actions button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animowane piksele w tle -->
+    <div class="pixel-bg" id="pixel-bg"></div>
+    
+    <header>
+        <div class="logo">
+            <i class="fas fa-server"></i>
+            <div>
+                <h1>Hosting Minecraft</h1>
+                <p class="tagline">Najlepsza jakość serwerów!</p>
+            </div>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#" class="nav-link active" data-section="home"><i class="fas fa-home"></i> Strona Główna</a></li>
+                <li><a href="#" class="nav-link" data-section="panel"><i class="fas fa-cogs"></i> Panel Hostingu</a></li>
+                <li><a href="#" class="nav-link" data-section="textures"><i class="fas fa-palette"></i> Tekstury</a></li>
+                <li><a href="#" class="nav-link" data-section="discord"><i class="fab fa-discord"></i> Discord</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <!-- Sekcja główna -->
+        <section id="home-section">
+            <div class="hero">
+                <h2><i class="fas fa-cubes"></i> Hosting Serwerów Minecraft</h2>
+                <p>Odkryj nasze wydajne i niezawodne serwery Minecraft z najwyższej jakości teksturami i pełną kontrolą nad swoim światem!</p>
+                <a href="#plans" class="btn"><i class="fas fa-arrow-down"></i> Zobacz Oferty</a>
+            </div>
+            
+            <!-- Sekcja z planami hostingowymi -->
+            <div class="section">
+                <h2 class="section-title" id="plans">
+                    <i class="fas fa-box-open"></i> Nasze Plany Hostingowe
+                </h2>
+                
+                <div class="plans-container">
+                    <div class="plan-card">
+                        <h3 class="plan-name">Plan Podstawowy</h3>
+                        <div class="plan-price">5 zł</div>
+                        <p>Najlepsza jakość serwerów!</p>
+                        
+                        <ul class="plan-features">
+                            <li><i class="fas fa-check"></i> 5 GB pamięci RAM</li>
+                            <li><i class="fas fa-check"></i> Nieograniczona ilość slotów</li>
+                            <li><i class="fas fa-check"></i> Dedykowane IP</li>
+                            <li><i class="fas fa-check"></i> Pełny dostęp FTP</li>
+                            <li><i class="fas fa-check"></i> Wsparcie 24/7</li>
+                            <li><i class="fas fa-check"></i> Instalator modów</li>
+                            <li><i class="fas fa-check"></i> Domena subdomena.hosting.pl</li>
+                        </ul>
+                        
+                        <button class="btn choose-plan" data-plan="basic"><i class="fas fa-check"></i> Wybieram</button>
+                    </div>
+                    
+                    <div class="plan-card wool">
+                        <h3 class="plan-name">Plan Wool</h3>
+                        <div class="plan-price">10 zł</div>
+                        <p>Idealny plan dla siebie!</p>
+                        
+                        <ul class="plan-features">
+                            <li><i class="fas fa-check"></i> 5 GB pamięci RAM</li>
+                            <li><i class="fas fa-check"></i> Nieograniczona ilość slotów</li>
+                            <li><i class="fas fa-check"></i> Dedykowane IP</li>
+                            <li><i class="fas fa-check"></i> Pełny dostęp FTP</li>
+                            <li><i class="fas fa-check"></i> Wsparcie 24/7</li>
+                            <li><i class="fas fa-check"></i> Darmowy backup</li>
+                            <li><i class="fas fa-check"></i> Dedykowane zasoby</li>
+                            <li><i class="fas fa-check"></i> Własna domena</li>
+                            <li><i class="fas fa-check"></i> Zaawansowane zarządzanie</li>
+                            <li><i class="fas fa-check"></i> Premium tekstury</li>
+                        </ul>
+                        
+                        <button class="btn wool-btn choose-plan" data-plan="wool"><i class="fas fa-check"></i> Wybieram</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sekcja Discord -->
+            <div class="discord-box">
+                <h3><i class="fab fa-discord"></i> Dołącz do naszej społeczności na Discord!</h3>
+                <p>Uzyskaj pomoc, poznaj innych graczy i bierz udział w specjalnych wydarzeniach na naszym serwerze Discord.</p>
+                <a href="#" class="discord-btn"><i class="fab fa-discord"></i> Dołącz teraz</a>
+            </div>
+        </section>
+        
+        <!-- Panel hostingu (logowanie/rejestracja) -->
+        <section id="panel-section" class="hidden">
+            <div class="section">
+                <h2 class="section-title"><i class="fas fa-cogs"></i> Panel Hostingu</h2>
+                
+                <div class="panel-container">
+                    <div class="panel-sidebar">
+                        <h3 class="sidebar-title"><i class="fas fa-user-circle"></i> Twoje Konto</h3>
+                        <div class="user-info">
+                            <p><i class="fas fa-user"></i> <strong id="username-display">Gracz</strong></p>
+                            <p><i class="fas fa-server"></i> Status: <span style="color:var(--success)">Aktywny</span></p>
+                            <p><i class="fas fa-wallet"></i> Saldo: <strong>15 zł</strong></p>
+                        </div>
+                        
+                        <div class="sidebar-menu">
+                            <ul>
+                                <li><a href="#" class="sidebar-link active" data-panel="server"><i class="fas fa-server"></i> Twoje Serwery</a></li>
+                                <li><a href="#" class="sidebar-link" data-panel="shop"><i class="fas fa-shopping-cart"></i> Sklep</a></li>
+                                <li><a href="#" class="sidebar-link" data-panel="invoices"><i class="fas fa-file-invoice"></i> Faktury</a></li>
+                                <li><a href="#" class="sidebar-link" data-panel="settings"><i class="fas fa-cog"></i> Ustawienia</a></li>
+                                <li><a href="#" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Wyloguj</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="panel-main">
+                        <!-- Panel powitalny po zalogowaniu -->
+                        <div id="server-panel">
+                            <div class="panel-welcome">
+                                <h2><i class="fas fa-gem"></i> Witaj w Panelu Hostingu!</h2>
+                                <p>Zarządzaj swoim serwerem Minecraft, kupuj nowe usługi i korzystaj z najlepszych tekstur dostępnych na rynku.</p>
+                            </div>
+                            
+                            <div class="server-list">
+                                <h3 class="section-title"><i class="fas fa-server"></i> Twój serwer Minecraft</h3>
+                                
+                                <div class="server-card">
+                                    <h3><i class="fas fa-cube"></i> Serwer Minecraft - <span id="server-plan">Plan Wool</span></h3>
+                                    
+                                    <div class="server-info">
+                                        <div>
+                                            <span>Status</span>
+                                            <strong style="color:var(--success)">Online</strong>
+                                        </div>
+                                        <div>
+                                            <span>Adres IP</span>
+                                            <strong>mc.hosting.pl:25565</strong>
+                                        </div>
+                                        <div>
+                                            <span>Wersja</span>
+                                            <strong>1.20.1</strong>
+                                        </div>
+                                        <div>
+                                            <span>Pamięć RAM</span>
+                                            <strong>5 GB</strong>
+                                        </div>
+                                        <div>
+                                            <span>Liczba graczy</span>
+                                            <strong>12/50</strong>
+                                        </div>
+                                        <div>
+                                            <span>Ostatni restart</span>
+                                            <strong>2 godziny temu</strong>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="server-actions">
+                                        <button class="start-btn"><i class="fas fa-play"></i> Uruchom</button>
+                                        <button class="stop-btn"><i class="fas fa-stop"></i> Zatrzymaj</button>
+                                        <button class="manage-btn"><i class="fas fa-wrench"></i> Zarządzaj</button>
+                                        <button class="manage-btn"><i class="fas fa-file-code"></i> Pliki</button>
+                                        <button class="manage-btn"><i class="fas fa-database"></i> Backup</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Formularz logowania -->
+                        <div id="login-form" class="hidden">
+                            <div class="login-form">
+                                <h3 class="form-title"><i class="fas fa-sign-in-alt"></i> Logowanie</h3>
+                                
+                                <div class="form-group">
+                                    <label for="login-email"><i class="fas fa-envelope"></i> Adres e-mail</label>
+                                    <input type="email" id="login-email" placeholder="Wprowadź swój e-mail">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="login-password"><i class="fas fa-lock"></i> Hasło</label>
+                                    <input type="password" id="login-password" placeholder="Wprowadź hasło">
+                                </div>
+                                
+                                <div class="form-actions">
+                                    <a href="#" style="color:var(--secondary); text-decoration: none;"><i class="fas fa-key"></i> Zapomniałeś hasła?</a>
+                                    <button class="btn" id="login-btn"><i class="fas fa-sign-in-alt"></i> Zaloguj się</button>
+                                </div>
+                                
+                                <div class="form-switch">
+                                    <p>Nie masz jeszcze konta? <a href="#" id="show-register"><i class="fas fa-user-plus"></i> Zarejestruj się teraz!</a></p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Formularz rejestracji -->
+                        <div id="register-form" class="hidden">
+                            <div class="login-form">
+                                <h3 class="form-title"><i class="fas fa-user-plus"></i> Rejestracja</h3>
+                                
+                                <div class="form-group">
+                                    <label for="register-username"><i class="fas fa-user"></i> Nazwa użytkownika</label>
+                                    <input type="text" id="register-username" placeholder="Wprowadź nazwę użytkownika">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="register-email"><i class="fas fa-envelope"></i> Adres e-mail</label>
+                                    <input type="email" id="register-email" placeholder="Wprowadź swój e-mail">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="register-password"><i class="fas fa-lock"></i> Hasło</label>
+                                    <input type="password" id="register-password" placeholder="Wprowadź hasło">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="register-confirm"><i class="fas fa-lock"></i> Powtórz hasło</label>
+                                    <input type="password" id="register-confirm" placeholder="Powtórz hasło">
+                                </div>
+                                
+                                <div class="form-actions">
+                                    <button class="btn" id="register-btn"><i class="fas fa-user-plus"></i> Zarejestruj się</button>
+                                </div>
+                                
+                                <div class="form-switch">
+                                    <p>Masz już konto? <a href="#" id="show-login"><i class="fas fa-sign-in-alt"></i> Zaloguj się!</a></p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Ustawienia konta -->
+                        <div id="settings-panel" class="hidden">
+                            <h3 class="section-title"><i class="fas fa-cog"></i> Ustawienia Konta</h3>
+                            
+                            <div class="settings-form">
+                                <div class="form-group">
+                                    <label for="settings-username"><i class="fas fa-user"></i> Nazwa użytkownika</label>
+                                    <input type="text" id="settings-username" value="MinecraftGamer" placeholder="Wprowadź nazwę użytkownika">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="settings-email"><i class="fas fa-envelope"></i> Adres e-mail</label>
+                                    <input type="email" id="settings-email" value="gamer@example.com" placeholder="Wprowadź swój e-mail">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="settings-current-password"><i class="fas fa-lock"></i> Aktualne hasło</label>
+                                    <input type="password" id="settings-current-password" placeholder="Wprowadź aktualne hasło">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="settings-new-password"><i class="fas fa-key"></i> Nowe hasło</label>
+                                    <input type="password" id="settings-new-password" placeholder="Wprowadź nowe hasło">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="settings-confirm-password"><i class="fas fa-lock"></i> Powtórz nowe hasło</label>
+                                    <input type="password" id="settings-confirm-password" placeholder="Powtórz nowe hasło">
+                                </div>
+                                
+                                <div class="form-actions">
+                                    <button class="btn" id="save-settings"><i class="fas fa-save"></i> Zapisz zmiany</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Sekcja z teksturami -->
+        <section id="textures-section" class="hidden">
+            <div class="section">
+                <h2 class="section-title"><i class="fas fa-palette"></i> Najlepsze Tekstury</h2>
+                <p>Odkryj naszą kolekcję najwyższej jakości tekstur dla Minecraft! Pobierz i ciesz się ulepszonym doświadczeniem gry.</p>
+                
+                <div class="texture-grid">
+                    <div class="texture-card">
+                        <div class="texture-img" style="background-image: url('https://i.imgur.com/YdYl0dZ.png');"></div>
+                        <div class="texture-info">
+                            <h4>Fantasy Kingdom</h4>
+                            <p>Magiczne tekstury dla twojego królestwa w Minecraft. Idealne do RPG i przygodowych map.</p>
+                        </div>
+                        <a href="#" class="texture-download"><i class="fas fa-download"></i> Pobierz</a>
+                    </div>
+                    
+                    <div class="texture-card">
+                        <div class="texture-img" style="background-image: url('https://i.imgur.com/6V2s3aT.png');"></div>
+                        <div class="texture-info">
+                            <h4>Modern HD</h4>
+                            <p>Nowoczesne tekstury w wysokiej rozdzielczości. Perfekcyjne do budowania współczesnych miast.</p>
+                        </div>
+                        <a href="#" class="texture-download"><i class="fas fa-download"></i> Pobierz</a>
+                    </div>
+                    
+                    <div class="texture-card">
+                        <div class="texture-img" style="background-image: url('https://i.imgur.com/TexYH1i.png');"></div>
+                        <div class="texture-info">
+                            <h4>Medieval Pack</h4>
+                            <p>Średniowieczne budowle i elementy. Stwórz autentyczne zamki i wioski z epoki.</p>
+                        </div>
+                        <a href="#" class="texture-download"><i class="fas fa-download"></i> Pobierz</a>
+                    </div>
+                    
+                    <div class="texture-card">
+                        <div class="texture-img" style="background-image: url('https://i.imgur.com/9jQ6Zt6.png');"></div>
+                        <div class="texture-info">
+                            <h4>Cyberpunk City</h4>
+                            <p>Futurystyczne tekstury dla nowoczesnych miast. Neonowe światła i technologiczne cuda.</p>
+                        </div>
+                        <a href="#" class="texture-download"><i class="fas fa-download"></i> Pobierz</a>
+                    </div>
+                    
+                    <div class="texture-card">
+                        <div class="texture-img" style="background-image: url('https://i.imgur.com/8LZtK9p.png');"></div>
+                        <div class="texture-info">
+                            <h4>Nature Pack</h4>
+                            <p>Ulepszone tekstury natury. Realistyczne drzewa, kwiaty i krajobrazy dla twojego świata.</p>
+                        </div>
+                        <a href="#" class="texture-download"><i class="fas fa-download"></i> Pobierz</a>
+                    </div>
+                    
+                    <div class="texture-card">
+                        <div class="texture-img" style="background-image: url('https://i.imgur.com/4XvJtFd.png');"></div>
+                        <div class="texture-info">
+                            <h4>Steampunk World</h4>
+                            <p>Połączenie technologii i wiktoriańskiej estetyki. Idealne dla alternatywnych historii.</p>
+                        </div>
+                        <a href="#" class="texture-download"><i class="fas fa-download"></i> Pobierz</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3><i class="fas fa-server"></i> Hosting Minecraft</h3>
+                <p>Oferujemy najwyższej jakości hosting serwerów Minecraft z pełną kontrolą, wsparciem 24/7 i najnowszymi technologiami.</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3><i class="fas fa-link"></i> Szybkie linki</h3>
+                <p>
+                    <a href="#" style="color:var(--gray); text-decoration: none; display: block; margin-bottom: 8px;">Strona główna</a>
+                    <a href="#" style="color:var(--gray); text-decoration: none; display: block; margin-bottom: 8px;">Panel hostingu</a>
+                    <a href="#" style="color:var(--gray); text-decoration: none; display: block; margin-bottom: 8px;">Tekstury</a>
+                    <a href="#" style="color:var(--gray); text-decoration: none; display: block; margin-bottom: 8px;">Discord</a>
+                </p>
+            </div>
+            
+            <div class="footer-section">
+                <h3><i class="fas fa-headset"></i> Kontakt</h3>
+                <p>
+                    <i class="fas fa-envelope"></i> kontakt@hosting-minecraft.pl<br>
+                    <i class="fas fa-phone"></i> +48 123 456 789<br>
+                    <i class="fab fa-discord"></i> Discord: hosting.minecraft
+                </p>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2023 Hosting Minecraft. Wszystkie prawa zastrzeżone.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Generowanie animowanych pikseli w tle
+        const pixelBg = document.getElementById('pixel-bg');
+        for (let i = 0; i < 100; i++) {
+            const pixel = document.createElement('div');
+            pixel.classList.add('pixel');
+            pixel.style.left = `${Math.random() * 100}%`;
+            pixel.style.top = `${Math.random() * 100}%`;
+            pixel.style.animationDuration = `${5 + Math.random() * 10}s`;
+            pixel.style.animationDelay = `${Math.random() * 5}s`;
+            pixel.style.opacity = Math.random() * 0.5;
+            pixelBg.appendChild(pixel);
+        }
+        
+        // Stan aplikacji
+        const appState = {
+            currentSection: 'home',
+            currentPanel: 'server',
+            isLoggedIn: false,
+            selectedPlan: 'wool',
+            user: null
+        };
+        
+        // Elementy DOM
+        const sections = {
+            home: document.getElementById('home-section'),
+            panel: document.getElementById('panel-section'),
+            textures: document.getElementById('textures-section'),
+            discord: document.getElementById('panel-section')
+        };
+        
+        const panels = {
+            server: document.getElementById('server-panel'),
+            login: document.getElementById('login-form'),
+            register: document.getElementById('register-form'),
+            settings: document.getElementById('settings-panel')
+        };
+        
+        // Funkcje pomocnicze
+        function showSection(sectionId) {
+            // Ukryj wszystkie sekcje
+            Object.values(sections).forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Pokaż wybraną sekcję
+            sections[sectionId].classList.remove('hidden');
+            appState.currentSection = sectionId;
+            
+            // Aktualizuj aktywną nawigację
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.section === sectionId) {
+                    link.classList.add('active');
+                }
+            });
+        }
+        
+        function showPanel(panelId) {
+            // Ukryj wszystkie panele
+            Object.values(panels).forEach(panel => {
+                if (panel) panel.classList.add('hidden');
+            });
+            
+            // Pokaż wybrany panel
+            panels[panelId].classList.remove('hidden');
+            appState.currentPanel = panelId;
+            
+            // Aktualizuj aktywny panel w menu bocznym
+            document.querySelectorAll('.sidebar-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.panel === panelId) {
+                    link.classList.add('active');
+                }
+            });
+        }
+        
+        function checkLoginState() {
+            if (appState.isLoggedIn) {
+                showPanel('server');
+                document.getElementById('username-display').textContent = appState.user?.username || 'Gracz';
+            } else {
+                showPanel('login');
+            }
+        }
+        
+        // Obsługa nawigacji
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                showSection(this.dataset.section);
+                
+                // Jeśli przechodzimy do panelu, sprawdź stan logowania
+                if (this.dataset.section === 'panel') {
+                    checkLoginState();
+                }
+            });
+        });
+        
+        // Obsługa menu bocznego w panelu
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                showPanel(this.dataset.panel);
+            });
+        });
+        
+        // Obsługa przycisków wyboru planu
+        document.querySelectorAll('.choose-plan').forEach(button => {
+            button.addEventListener('click', function() {
+                appState.selectedPlan = this.dataset.plan;
+                showSection('panel');
+                
+                // Aktualizuj nazwę planu w panelu serwera
+                if (appState.selectedPlan === 'basic') {
+                    document.getElementById('server-plan').textContent = 'Plan Podstawowy';
+                } else {
+                    document.getElementById('server-plan').textContent = 'Plan Wool';
+                }
+                
+                checkLoginState();
+            });
+        });
+        
+        // Obsługa przełączania między logowaniem a rejestracją
+        document.getElementById('show-register').addEventListener('click', function(e) {
+            e.preventDefault();
+            showPanel('register');
+        });
+        
+        document.getElementById('show-login').addEventListener('click', function(e) {
+            e.preventDefault();
+            showPanel('login');
+        });
+        
+        // Obsługa logowania
+        document.getElementById('login-btn').addEventListener('click', function() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (email && password) {
+                // Symulacja pomyślnego logowania
+                appState.isLoggedIn = true;
+                appState.user = {
+                    username: 'MinecraftGamer',
+                    email: email
+                };
+                
+                // Aktualizuj nazwę użytkownika w panelu
+                document.getElementById('username-display').textContent = appState.user.username;
+                
+                // Pokaż panel serwera
+                showPanel('server');
+                
+                alert(`Zalogowano jako: ${email}`);
+            } else {
+                alert('Proszę wypełnić wszystkie pola!');
+            }
+        });
+        
+        // Obsługa rejestracji
+        document.getElementById('register-btn').addEventListener('click', function() {
+            const username = document.getElementById('register-username').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const confirm = document.getElementById('register-confirm').value;
+            
+            if (!username || !email || !password || !confirm) {
+                alert('Proszę wypełnić wszystkie pola!');
+                return;
+            }
+            
+            if (password !== confirm) {
+                alert('Hasła nie są identyczne!');
+                return;
+            }
+            
+            // Symulacja pomyślnej rejestracji
+            appState.isLoggedIn = true;
+            appState.user = {
+                username: username,
+                email: email
+            };
+            
+            // Aktualizuj nazwę użytkownika w panelu
+            document.getElementById('username-display').textContent = appState.user.username;
+            
+            // Pokaż panel serwera
+            showPanel('server');
+            
+            alert(`Zarejestrowano i zalogowano jako: ${username}`);
+        });
+        
+        // Obsługa wylogowania
+        document.getElementById('logout-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            appState.isLoggedIn = false;
+            appState.user = null;
+            checkLoginState();
+            alert('Wylogowano pomyślnie!');
+        });
+        
+        // Obsługa zapisywania ustawień
+        document.getElementById('save-settings').addEventListener('click', function() {
+            const username = document.getElementById('settings-username').value;
+            const email = document.getElementById('settings-email').value;
+            const currentPassword = document.getElementById('settings-current-password').value;
+            const newPassword = document.getElementById('settings-new-password').value;
+            const confirmPassword = document.getElementById('settings-confirm-password').value;
+            
+            if (!username || !email) {
+                alert('Proszę wypełnić nazwę użytkownika i email!');
+                return;
+            }
+            
+            if (newPassword && newPassword !== confirmPassword) {
+                alert('Nowe hasła nie są identyczne!');
+                return;
+            }
+            
+            if (appState.user) {
+                appState.user.username = username;
+                appState.user.email = email;
+                document.getElementById('username-display').textContent = username;
+            }
+            
+            alert('Ustawienia zostały zapisane pomyślnie!');
+        });
+        
+        // Obsługa przycisków serwera
+        document.querySelectorAll('.server-actions button').forEach(button => {
+            button.addEventListener('click', function() {
+                const action = this.textContent.trim();
+                alert(`Wybrano akcję: ${action} dla serwera!`);
+            });
+        });
+        
+        // Inicjalizacja
+        showSection('home');
+    </script>
+</body>
+</html>
